@@ -9,22 +9,31 @@ class YmlpComponent extends Object {
         $this->fieldMap = Configure::read('Ymlp.fieldMap');
 	}
 
-    public function contactsAdd($data) {
+    public function contactsAdd($data, $force = false) {
         $data = $this->__prepPost($data);
+        if ($force) {
+            $data['OverruleUnsubscribedBounced'] = 1;
+        }
         $result = $this->__makePost('Contacts.Add', $data);
         $message = $this->__setOutput($result);
         return $message;
     }
 
-    public function contactsDelete($data) {
-
+    public function contactsUnsubscribe($data) {
+        $data = $this->__prepPost($data, true);
+        $result = $this->__makePost('Contacts.Unsubscribe', $data);
+        $message = $this->__setOutput($result);
+        return $message;
     }
 
-    private function __prepPost($data) {
+    private function __prepPost($data, $emailOnly = false) {
         $fields = array();
         foreach ($this->fieldMap as $local => $id) {
             if ($id == 'Email') {
                 $fields["$id"] = $data[$local];
+                if ($emailOnly) {
+                    return $fields;
+                }
             } else {
                 $fields["Field$id"] = $data[$local];
             }
