@@ -9,6 +9,12 @@ class YmlpComponent extends Object {
         $this->fieldMap = Configure::read('Ymlp.fieldMap');
 	}
 
+    public function utility($method, $data = array()) {
+        $result = $this->__makePost($method, $data);
+        $result = unserialize($result);
+        return $result;
+    }
+
     public function contactsAdd($data, $force = false) {
         $data = $this->__prepPost($data);
         if ($force) {
