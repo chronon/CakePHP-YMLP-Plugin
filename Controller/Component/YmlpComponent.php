@@ -59,6 +59,9 @@ class YmlpComponent extends Component {
 		if (!$this->settings || !$this->fieldMap) {
 			throw new CakeException('YMLP configuration not found.');
 		}
+
+		// set the output format for YMLP API calls
+		$this->settings['Output'] = 'PHP';
 	}
 
 /**
