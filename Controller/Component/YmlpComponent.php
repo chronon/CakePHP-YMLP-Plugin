@@ -7,7 +7,7 @@
  * @package		YmlpComponent
  * @author		Gregory Gaskill <one@chronon.com>
  * @license		MIT License (http://www.opensource.org/licenses/mit-license.php)
- * @link		https://github.com/chronon/CakePHP-YMLPComponent-Plugin
+ * @link		https://github.com/chronon/CakePHP-YmlpComponent-Plugin
  */
 
 App::uses('Component', 'Controller');
