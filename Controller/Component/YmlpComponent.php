@@ -19,29 +19,19 @@ class YmlpComponent extends Component {
 	}
 
 	public function utility($method, $data = array()) {
-		$result = $this->makePost($method, $data);
+		$result = $this->_makePost($method, $data);
 		$result = unserialize($result);
 		return $result;
 	}
 
-	public function contactsAdd($data, $force = false) {
-		$data = $this->__prepPost($data);
-		if ($force) {
-			$data['OverruleUnsubscribedBounced'] = 1;
-		}
-		$result = $this->__makePost('Contacts.Add', $data);
-		$message = $this->__setOutput($result);
+	public function command($method, $data) {
+		$data = $this->_prepPost($data);
+		$result = $this->_makePost($method, $data);
+		$message = $this->_setOutput($result);
 		return $message;
 	}
 
-	public function contactsUnsubscribe($data) {
-		$data = $this->__prepPost($data, true);
-		$result = $this->__makePost('Contacts.Unsubscribe', $data);
-		$message = $this->__setOutput($result);
-		return $message;
-	}
-
-	private function __prepPost($data, $emailOnly = false) {
+	protected function _prepPost($data, $emailOnly = false) {
 		$fields = array();
 		foreach ($this->fieldMap as $local => $id) {
 			if ($id == 'Email') {
@@ -56,18 +46,18 @@ class YmlpComponent extends Component {
 		return $fields;
 	}
 
-	private function __setOutput($result) {
+	protected function _setOutput($result) {
 		if ($result) {
 			$result = unserialize($result);
 			$message = 'Code ' . $result['Code'];
 			$message .= ': ' . $result['Output'];
 		} else {
-			$message = 'YMLP connection error!';
+			$message = 'YMLP connection error.';
 		}
 		return $message;
 	}
 
-	public function makePost($method, $data) {
+	protected function _makePost($method, $data) {
 		// complete the url
 		$url = $this->apiUrl . $method;
 

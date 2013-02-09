@@ -9,6 +9,36 @@ class TestManageController extends Controller {
 	// hi
 }
 
+class YmlpTestComponent extends YmlpComponent {
+
+/**
+ * Convenience method for testing.
+ *
+ * @return string
+ */
+	public function prepPost($data, $emailOnly = false) {
+		return parent::_prepPost($data, $emailOnly);
+	}
+
+/**
+ * Convenience method for testing.
+ *
+ * @return string
+ */
+	public function setOutput($result) {
+		return parent::_setOutput($result);
+	}
+/**
+ * Convenience method for testing.
+ *
+ * @return string
+ */
+	public function makePost($method, $data) {
+		return parent::_makePost($method, $data);
+	}
+
+}
+
 class YmlpComponentTest extends CakeTestCase {
 
 	public $YmlpSettings = array(
@@ -30,10 +60,13 @@ class YmlpComponentTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$Collection = new ComponentCollection();
-		$this->YmlpComponent = new YmlpComponent($Collection);
+		$this->YmlpComponent = new YmlpTestComponent($Collection);
 		$CakeRequest = new CakeRequest();
 		$CakeResponse = new CakeResponse();
 		$this->Controller = new TestManageController($CakeRequest, $CakeResponse);
+
+		$this->__setConfig();
+		$this->YmlpComponent->startup($this->Controller);
 	}
 
 	public function tearDown() {
@@ -52,20 +85,94 @@ class YmlpComponentTest extends CakeTestCase {
 		$this->YmlpComponent->startup($this->Controller);
 	}
 
-	public function testStartupWithConfig() {
-		$this->__setConfig();
-		$this->YmlpComponent->startup($this->Controller);
+	public function testPrepPost() {
+		$data = array(
+			'first_name' => 'Casi',
+			'last_name' => 'Robot',
+			'address' => '189 Chillsbury Rd',
+			'city' => 'Santa Monica',
+			'state' => 'CA',
+			'other' => '',
+			'zip' => '91471',
+			'country' => 'US',
+			'email' => 'casi@robot.com',
+		);
+
+		$expected = array(
+			'Email' => 'casi@robot.com',
+			'Field0' => 'Casi',
+			'Field1' => 'Robot',
+			'Field3' => '189 Chillsbury Rd',
+			'Field4' => 'Santa Monica',
+			'Field5' => 'CA',
+			'Field6' => '91471',
+		);
+
+		$result = $this->YmlpComponent->prepPost($data);
+		$this->assertEquals($expected, $result);
+
+		// email only
+		$expected = array(
+			'Email' => 'casi@robot.com',
+		);
+
+		$result = $this->YmlpComponent->prepPost($data, true);
+		$this->assertEquals($expected, $result);
+	}
+
+	public function testSetOutput() {
+		$data = 'a:2:{s:4:"Code";s:1:"0";s:6:"Output";s:6:"Hello!";}';
+		$expected = 'Code 0: Hello!';
+		$result = $this->YmlpComponent->setOutput($data);
+		$this->assertEquals($expected, $result);
+
+		$data = null;
+		$expected = 'YMLP connection error.';
+		$result = $this->YmlpComponent->setOutput($data);
+		$this->assertEquals($expected, $result);
+	}
+
+	public function testMakePost() {
+		$method = 'Ping';
+		$data = array();
+		$result = $this->YmlpComponent->makePost($method, $data);
+		$expected = 'a:2:{s:4:"Code";s:1:"0";s:6:"Output";s:6:"Hello!";}';
+		$this->assertEquals($expected, $result);
 	}
 
 	public function testUtilityPing() {
-		$this->__setConfig();
-		$this->YmlpComponent->startup($this->Controller);
-
 		$method = 'Ping';
 		$result = $this->YmlpComponent->utility($method);
 		$expected = array(
 			'Code' => '0',
 			'Output' => 'Hello!'
+		);
+		$this->assertEquals($expected, $result);
+	}
+
+	public function testCommandContactsAdd() {
+		$data = array(
+			'first_name' => 'Casi',
+			'last_name' => 'Robot',
+			'address' => '189 Chillsbury Rd',
+			'city' => 'Santa Monica',
+			'state' => 'CA',
+			'other' => '',
+			'zip' => '91471',
+			'country' => 'US',
+			'email' => 'casi@robot.com',
+		);
+		$method = 'Contacts.Add';
+		$expected = 'Code 0: casi@robot.com has been added';
+		$result = $this->YmlpComponent->command($method, $data);
+		$this->assertEquals($expected, $result);
+
+		// remove the just added contact
+		$data = array('email' => 'casi@robot.com');
+		$result = $this->__removeContact($data);
+		$expected = array(
+			'Code' => '0',
+			'Output' => 'casi@robot.com has been removed'
 		);
 		$this->assertEquals($expected, $result);
 	}
@@ -77,6 +184,12 @@ class YmlpComponentTest extends CakeTestCase {
 		if (!Configure::check('Ymlp.fieldMap')) {
 			Configure::write('Ymlp.fieldMap', $this->YmlpFieldmap);
 		}
+	}
+
+	private function __removeContact($data) {
+		$method = 'Contacts.Delete';
+		$data = $this->YmlpComponent->prepPost($data, true);
+		return $this->YmlpComponent->utility($method, $data);
 	}
 
 }
