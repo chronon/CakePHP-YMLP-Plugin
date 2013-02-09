@@ -64,8 +64,6 @@ class YmlpComponentTest extends CakeTestCase {
 		$CakeRequest = new CakeRequest();
 		$CakeResponse = new CakeResponse();
 		$this->Controller = new TestManageController($CakeRequest, $CakeResponse);
-
-		$this->__setConfig();
 		$this->YmlpComponent->startup($this->Controller);
 	}
 
@@ -175,15 +173,6 @@ class YmlpComponentTest extends CakeTestCase {
 			'Output' => 'casi@robot.com has been removed'
 		);
 		$this->assertEquals($expected, $result);
-	}
-
-	private function __setConfig() {
-		if (!Configure::check('Ymlp.settings')) {
-			Configure::write('Ymlp.settings', $this->YmlpSettings);
-		}
-		if (!Configure::check('Ymlp.fieldMap')) {
-			Configure::write('Ymlp.fieldMap', $this->YmlpFieldmap);
-		}
 	}
 
 	private function __removeContact($data) {
