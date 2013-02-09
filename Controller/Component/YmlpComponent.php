@@ -1,14 +1,57 @@
 <?php
+/**
+ * Ymlp Component
+ *
+ * PHP version 5
+ *
+ * @package		YmlpComponent
+ * @author		Gregory Gaskill <one@chronon.com>
+ * @license		MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @link		https://github.com/chronon/CakePHP-YMLPComponent-Plugin
+ */
+
 App::uses('Component', 'Controller');
 
+/**
+ * YmlpComponent
+ *
+ * An interface to the YMLP API for newsletter subscriber management.
+ *
+ * @package		YmlpComponent
+ */
 class YmlpComponent extends Component {
 
+/**
+ * URL for the YMLP API
+ *
+ * @var string
+ * @access public
+ */
 	public $apiUrl = 'https://www.ymlp.com/api/';
 
+/**
+ * Component settings
+ *
+ * @var array
+ * @access public
+ */
 	public $settings = array();
 
+/**
+ * Mapping of local fields => YMLP fields
+ *
+ * @var array
+ * @access public
+ */
 	public $fieldMap = array();
 
+/**
+ * Controller startup. Sets options from  APP/Config/bootstrap.php.
+ *
+ * @param Controller $controller Instantiating controller
+ * @return void
+ * @throws CakeException
+ */
 	public function startup(Controller $controller) {
 		$this->settings = Configure::read('Ymlp.settings');
 		$this->fieldMap = Configure::read('Ymlp.fieldMap');
@@ -18,12 +61,29 @@ class YmlpComponent extends Component {
 		}
 	}
 
+/**
+ * A utility method to send anything to the YMLP API
+ *
+ * @param string $method The YMLP API method call
+ * @param array  $data Data to pass to the YMLP method
+ * @return string
+ * @access public
+ */
 	public function utility($method, $data = array()) {
 		$result = $this->_makePost($method, $data);
 		$result = unserialize($result);
 		return $result;
 	}
 
+/**
+ * The primary method to format data, post it to the YMLP API, and then format
+ * the returned result.
+ *
+ * @param string $method The YMLP API method call
+ * @param array  $data Data to pass to the YMLP method
+ * @return string
+ * @access public
+ */
 	public function command($method, $data) {
 		$data = $this->_prepPost($data);
 		$result = $this->_makePost($method, $data);
@@ -31,6 +91,14 @@ class YmlpComponent extends Component {
 		return $message;
 	}
 
+/**
+ * Formats data to match local fields to configured YMLP fields.
+ *
+ * @param array $data The unformatted data
+ * @param boolean $emailOnly Ignore other fields, use email address only
+ * @return array The formatted data ready to post
+ * @access protected
+ */
 	protected function _prepPost($data, $emailOnly = false) {
 		$fields = array();
 		foreach ($this->fieldMap as $local => $id) {
@@ -46,6 +114,13 @@ class YmlpComponent extends Component {
 		return $fields;
 	}
 
+/**
+ * Unserializes the result from the YMLP API
+ *
+ * @param array $result Data returned from the API
+ * @return string Formatted data
+ * @access protected
+ */
 	protected function _setOutput($result) {
 		if ($result) {
 			$result = unserialize($result);
@@ -57,6 +132,14 @@ class YmlpComponent extends Component {
 		return $message;
 	}
 
+/**
+ * Uses cURL to make the API call
+ *
+ * @param string $method The YMLP API method call
+ * @param array  $data Data to pass to the YMLP method
+ * @return boolean
+ * @access protected
+ */
 	protected function _makePost($method, $data) {
 		// complete the url
 		$url = $this->apiUrl . $method;
