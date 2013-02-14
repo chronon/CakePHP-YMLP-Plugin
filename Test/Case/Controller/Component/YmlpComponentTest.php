@@ -98,8 +98,8 @@ class YmlpComponentTest extends CakeTestCase {
 
 		$expected = array(
 			'Email' => 'casi@robot.com',
-			'Field0' => 'Casi',
-			'Field1' => 'Robot',
+			'Field1' => 'Casi',
+			'Field2' => 'Robot',
 			'Field3' => '189 Chillsbury Rd',
 			'Field4' => 'Santa Monica',
 			'Field5' => 'CA',
