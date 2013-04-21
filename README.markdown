@@ -18,7 +18,7 @@ Tested with CakePHP 2.3.x. Requires PHP 5 with cURL support.
 Installation:
 -------------
 
-**Using [Composer](http://getcomposer.org/)::**
+**Using [Composer](http://getcomposer.org/)/[Packagist](https://packagist.org):**
 
 In your project `composer.json` file:
 
