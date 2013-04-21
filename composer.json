@@ -1,8 +1,8 @@
 {
     "name": "chronon/ymlp",
 	"type": "cakephp-plugin",
-	"description": "A CakePHP 2.x component that interfaces with YMLP/Your Mailing List Provider's API.",
-    "keywords": ["cakephp", "component", "ymlp"],
+	"description": "A CakePHP 2.x plugin component that interfaces with YMLP/Your Mailing List Provider's API.",
+    "keywords": ["cakephp", "component", "ymlp", "plugin"],
 	"homepage": "https://github.com/chronon/CakePHP-YMLP-Plugin",
     "license": "MIT",
     "authors": [
@@ -15,6 +15,7 @@
     ],
     "require": {
 		"php": ">=5.3.0",
-		"composer/installers": "*"
+		"composer/installers": "*",
+		"ext-curl": "*"
     }
 }
