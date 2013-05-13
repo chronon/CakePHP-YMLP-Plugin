@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @package		YmlpComponent
- * @author		Gregory Gaskill <one@chronon.com>
+ * @author		Gregory Gaskill <gregory@chronon.com>
  * @license		MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link		https://github.com/chronon/CakePHP-YmlpComponent-Plugin
  */
