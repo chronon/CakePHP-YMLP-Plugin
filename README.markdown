@@ -1,6 +1,8 @@
 CakePHP [YMLP](http://www.ymlp.com/) Component
 ==============================================
 
+### NOTE: This project is deprecated and will most likely not be updated. It remains a working YMLP API solution for CakePHP 2.x apps, but will not be updated for CakePHP 3.x.
+
 [YMLP](http://www.ymlp.com/), or Your Mailing List Provider, is a email newsletter and marketing
 service with free and paid accounts, and a well written API.
 
@@ -13,7 +15,7 @@ API page!
 Compatibility:
 --------------
 
-Tested with CakePHP 2.3.x. Requires PHP 5 with cURL support.
+Tested with CakePHP 2.8.x. Requires PHP 5 with cURL support.
 
 Installation:
 -------------
